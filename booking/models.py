@@ -21,7 +21,7 @@ class Event(models.Model):
         PRIVATE = 'PRI', 'Private'
 
     title = models.CharField(max_length=200)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, unique_for_date='date')
     date = models.DateField()
     type = models.CharField(
         max_length = 3,

@@ -1,0 +1,102 @@
+[
+    {
+        "model": "booking.user",
+        "pk": 1,
+        "fields":
+        {
+            "password": "pbkdf2_sha256$390000$2NV99Gw2uKwPvaT2iTntRu$sVQ167IJ7FG3mZCkqC2EQCmH1v8YF9Sd1CWb8cRIW5o=",
+            "last_login": null,
+            "is_superuser": true,
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "email": "admin@example.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2022-10-26T23:05:47.373Z",
+            "role": "CUS",
+            "groups":
+            [],
+            "user_permissions":
+            []
+        }
+    },
+    {
+        "model": "booking.user",
+        "pk": 2,
+        "fields":
+        {
+            "password": "pbkdf2_sha256$390000$2NV99Gw2uKwPvaT2iTntRu$sVQ167IJ7FG3mZCkqC2EQCmH1v8YF9Sd1CWb8cRIW5o=",
+            "last_login": null,
+            "is_superuser": true,
+            "username": "custom",
+            "first_name": "",
+            "last_name": "",
+            "email": "custom@example.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2022-10-26T23:05:47.373Z",
+            "role": "CUS",
+            "groups":
+            [],
+            "user_permissions":
+            []
+        }
+    },
+    {
+        "model": "booking.room",
+        "pk": 1,
+        "fields":
+        {
+            "capacity": 10
+        }
+    },
+    {
+        "model": "booking.room",
+        "pk": 2,
+        "fields":
+        {
+            "capacity": 1
+        }
+    },
+    {
+        "model": "booking.event",
+        "pk": 1,
+        "fields":
+        {
+            "title": "Primer Evento del año",
+            "room": 1,
+            "date": "2022-10-10",
+            "type": "PUB"
+        }
+    },
+    {
+        "model": "booking.event",
+        "pk": 2,
+        "fields":
+        {
+            "title": "Evento lleno",
+            "room": 2,
+            "date": "2022-10-10",
+            "type": "PUB"
+        }
+    },
+    {
+        "model": "booking.booking",
+        "pk": 1,
+        "fields":
+        {
+            "event": 1,
+            "user": 1
+        }
+    },
+    {
+        "model": "booking.booking",
+        "pk": 2,
+        "fields":
+        {
+            "event": 2,
+            "user": 1
+        }
+    }
+]
