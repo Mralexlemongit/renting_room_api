@@ -53,7 +53,8 @@ class BookingTestCase(TestCase):
         response = self.client.post('/events/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
 
-    # def test_business_can_book_private_event(self):
+    # def test_business_can_book_himself_in_private_event(self):
+    # def test_business_can_book_others_in_private_event(self):
     # def test_customer_canot_book_private_event(self):
     # def test_user_can_book_event(self):
     # def test_user_cannot_book_full_event(self):

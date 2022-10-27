@@ -36,3 +36,8 @@ class BookingSerializer(serializers.ModelSerializer):
                 message= "Cannot book twice one event."
             )
         ]
+
+    def validate_event(self, event):
+      if event.has_available_spaces():
+          return event
+      raise serializers.ValidationError("Event has no spaces available.")

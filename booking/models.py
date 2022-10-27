@@ -29,6 +29,12 @@ class Event(models.Model):
         default = Type.PUBLIC
     )
 
+    def occupied_spaces(self):
+        return len(self.booking_set.all())
+
+    def has_available_spaces(self):
+        return True if self.room.capacity > self.occupied_spaces() else False
+
 class Booking(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
