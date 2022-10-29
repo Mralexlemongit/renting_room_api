@@ -8,10 +8,15 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['url', 'username', 'email', 'group']
 
-class RoomSerializer(serializers.ModelSerializer):
+class RoomListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ['url', 'id', 'capacity',]
+
+class RoomDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ['id', 'capacity',] #Events
     
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
