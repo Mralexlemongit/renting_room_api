@@ -1,16 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
-class User(AbstractUser):
-    class Type(models.TextChoices):
-        BUSINESS = 'BUS', 'Bussines'
-        CUSTOMER = 'CUS', 'Customer'
-
-    role = models.CharField(
-        max_length = 3,
-        choices = Type.choices,
-        default = Type.CUSTOMER
-    )
+from django.contrib.auth.models import User
 
 class Room(models.Model):
     capacity = models.IntegerField()

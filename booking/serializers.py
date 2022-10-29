@@ -1,11 +1,12 @@
-from booking.models import User, Room, Event, Booking
+from booking.models import Room, Event, Booking
+from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator, UniqueForDateValidator
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'role',]
+        fields = ['url', 'username', 'email', 'group']
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:

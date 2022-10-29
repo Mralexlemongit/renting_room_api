@@ -1,15 +1,10 @@
-from booking.models import User, Booking, Room, Event
+from booking.models import Booking, Room, Event
 from rest_framework import viewsets
 from booking.serializers import (
-    UserSerializer,
     BookingSerializer,
     RoomSerializer,
     EventSerializer
 )
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()

@@ -6,12 +6,25 @@ class BookingTestCase(TestCase):
     fixtures = ['booking.json', ]
     
     def setUp(self):
-        self.client = APIClient()
+        self.unauthenticated_client = APIClient()
+        self.business_client = APIClient()
+        self.business_client.login(username='admin', password='admin')
+        self.customer_client = APIClient()
+        self.customer_client.login(username='custom', password='admin')
 
-    def test_create_room(self):
+    def test_unauthenticated_can_list_rooms(self):
+        response = self.unauthenticated_client.get('/rooms/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_businnes_can_create_room(self):
         data = {"capacity": 10}
-        response = self.client.post('/rooms/', data)
+        response = self.business_client.post('/rooms/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    
+    def test_customer_cannot_create_room(self):
+        data = {"capacity": 10}
+        response = self.business_client.post('/rooms/', data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_event(self):
         data = {

@@ -1,6 +1,24 @@
 [
     {
-        "model": "booking.user",
+        "model": "auth.group",
+        "pk": 1,
+        "fields": 
+        {
+            "name": "business",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 2,
+        "fields": 
+        {
+            "name": "customer",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
         "pk": 1,
         "fields":
         {
@@ -14,15 +32,14 @@
             "is_staff": true,
             "is_active": true,
             "date_joined": "2022-10-26T23:05:47.373Z",
-            "role": "CUS",
             "groups":
-            [],
+            [1],
             "user_permissions":
             []
         }
     },
     {
-        "model": "booking.user",
+        "model": "auth.user",
         "pk": 2,
         "fields":
         {
@@ -36,9 +53,8 @@
             "is_staff": true,
             "is_active": true,
             "date_joined": "2022-10-26T23:05:47.373Z",
-            "role": "CUS",
             "groups":
-            [],
+            [2],
             "user_permissions":
             []
         }
