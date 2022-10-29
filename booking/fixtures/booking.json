@@ -80,6 +80,7 @@
         "pk": 1,
         "fields":
         {
+            "owner": 1,
             "title": "Primer Evento del año",
             "room": 1,
             "date": "2022-10-10",
@@ -91,10 +92,11 @@
         "pk": 2,
         "fields":
         {
+            "owner": 1,
             "title": "Evento lleno",
             "room": 2,
             "date": "2022-10-10",
-            "type": "PUB"
+            "type": "PRI"
         }
     },
     {

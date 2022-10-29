@@ -12,6 +12,7 @@ class Event(models.Model):
     title = models.CharField(max_length=200)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, unique_for_date='date')
     date = models.DateField()
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.CharField(
         max_length = 3,
         choices = Type.choices,

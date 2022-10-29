@@ -1,3 +1,4 @@
+from asyncio import events
 from booking.models import Room, Event, Booking
 from django.contrib.auth.models import User
 from rest_framework import serializers
@@ -16,8 +17,21 @@ class RoomListSerializer(serializers.ModelSerializer):
 class RoomDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
-        fields = ['id', 'capacity',] #Events
-    
+        fields = ['id', 'capacity',]
+
+class EventListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['url', 'title', 'room', 'date', 'type',]
+        validators = [
+            UniqueForDateValidator(
+                queryset = Event.objects.all(),
+                field = 'room',
+                date_field = 'date',
+                message = "Cannot create event in room with day reserved."
+            )
+        ]
+
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
