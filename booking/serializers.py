@@ -1,4 +1,3 @@
-from asyncio import events
 from booking.models import Room, Event, Booking
 from django.contrib.auth.models import User
 from rest_framework import serializers
@@ -9,46 +8,42 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['url', 'username', 'email', 'group']
 
-class RoomListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Room
-        fields = ['url', 'id', 'capacity',]
-
-class RoomDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Room
-        fields = ['id', 'capacity',]
+event_unic_for_date_validation = UniqueForDateValidator(
+    queryset = Event.objects.all(),
+    field = 'room',
+    date_field = 'date',
+    message = "Cannot create event in room with day reserved."
+)
 
 class EventListSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Event
-        fields = ['url', 'title', 'room', 'date', 'type',]
+        fields = ['url', 'title', 'room', 'date', 'type', 'owner']
         validators = [
-            UniqueForDateValidator(
-                queryset = Event.objects.all(),
-                field = 'room',
-                date_field = 'date',
-                message = "Cannot create event in room with day reserved."
-            )
+            event_unic_for_date_validation
         ]
 
-class EventSerializer(serializers.ModelSerializer):
+class EventDetailSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Event
-        fields = ['url', 'title', 'room', 'date', 'type',]
+        fields = ['title', 'room', 'date', 'type', 'owner']
         validators = [
-            UniqueForDateValidator(
-                queryset = Event.objects.all(),
-                field = 'room',
-                date_field = 'date',
-                message = "Cannot create event in room with day reserved."
-            )
+            event_unic_for_date_validation
         ]
 
-class BookingSerializer(serializers.ModelSerializer):
+class BookingListSerializer(serializers.ModelSerializer):
+    user =  serializers.PrimaryKeyRelatedField(
+        read_only=True, 
+        default=serializers.CurrentUserDefault()
+    )
+
     class Meta:
         model = Booking
-        fields = ['url', 'event', 'user']
+        fields = ['url', 'event', 'user', ]
         validators = [
             UniqueTogetherValidator(
                 queryset=Booking.objects.all(),
@@ -57,7 +52,28 @@ class BookingSerializer(serializers.ModelSerializer):
             )
         ]
 
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['event'] = Event.objects.get(pk=rep['event']).title
+        rep['user'] = User.objects.get(pk=rep['user']).username
+        return rep
+
     def validate_event(self, event):
-      if event.has_available_spaces():
-          return event
-      raise serializers.ValidationError("Event has no spaces available.")
+        if not event.has_available_spaces():
+            raise serializers.ValidationError("Event has no spaces available.")
+        return event
+
+class RoomListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ['url', 'id', 'capacity',]
+
+class RoomDetailSerializer(serializers.ModelSerializer):
+    events = EventListSerializer(
+        many = True,
+        read_only = True,
+    )
+
+    class Meta:
+        model = Room
+        fields = ['id', 'capacity', 'events', ]
