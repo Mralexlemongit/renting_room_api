@@ -1,8 +1,10 @@
-from booking.models import Booking, Room, Event
 from django.contrib.auth.models import User
-from booking.permissions import IsBusinessOrReadOnly
 from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from drf_yasg.utils import swagger_auto_schema
+
+from booking.models import Booking, Room, Event
+from booking.permissions import IsBusinessOrReadOnly
 from booking.serializers import (
     BookingListSerializer,
     RoomListSerializer,
@@ -15,6 +17,10 @@ class RoomListView(generics.ListCreateAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomListSerializer
     permission_classes = [IsBusinessOrReadOnly]
+
+    @swagger_auto_schema(operation_description="description")
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 class RoomDetailView(generics.RetrieveDestroyAPIView):
     queryset = Room.objects.all()
@@ -43,6 +49,10 @@ class EventDetailView(PublicAndOwnedEventsQuerySetMixin, generics.RetrieveUpdate
 class BookingListView(generics.ListCreateAPIView):
     serializer_class = BookingListSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
+
+    @swagger_auto_schema(operation_description="description")
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
