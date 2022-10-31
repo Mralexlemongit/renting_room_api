@@ -1,0 +1,4 @@
+- Test borrado de cuarto
+    - Se puede borrar un cuarto sin eventos
+    - Se puede borrar un cuarto solo con eventos pasados
+    - No se puede borrar un cuarto con eventos futuros
