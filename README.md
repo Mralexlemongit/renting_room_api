@@ -109,8 +109,38 @@ Para la documentación de la api se decidió usar `drf-yasg` con `redocs` por su
 
 ### 2.4. Dockerización
 
-Para este proyecto se tuvo que aprender Dockers. Afortunadamente, fue relativamente sencillo su implementación dada su amplia documentación para Django.
+Para este proyecto se tuvo que aprender Dockers. Afortunadamente, fue relativamente sencillo su implementación dada su amplia documentación para Django. Se tuvo que instalar Docker y el complemento WSL2. Hubo dos problemas grandes en esta tarea, el primero fue entender cuáles eran los comandos mínimos para poder levantar el ambiente. El segundo sucede de la decisión del movimiento de carpetas para limpieza de la estructura del código, esto termino en una reestructuración de los archivos `Dockerfile` y `docker-compose.yml` y lograr una comprensión sencilla de sus comandos.
 
-### 2.5. Kubernetes
+### 2.5. Kubernetes y Servicio SaaS o FaaS
 
-### 2.6. Servicio SaaS o FaaS
+Para kubernetes se descargaron e instalaron los binarios de `Minikube` y `Kubectl`, siguiendo una guía nos quedamos atorados en el siguiente paso
+
+```cmd
+$ minikube start --vm-driver=virtualbox
+
+minikube v1.8.2 on Microsoft Windows 10 Enterprise 10.0.18363 Build 18363
+Using the hyperv driver based on existing profile
+Reconfiguring existing host ...
+Using the running hyperv "minikube" VM ...
+! Node may be unable to resolve external DNS records
+! VM is unable to access k8s.gcr.io, you may need to configure a proxy or set --image-repository
+```
+
+Siguiendo los pasos se pudo levantar minikube, pero se me mostraban `0/2` en los pods donde se esperaban `2/2` y al acceder a la ruta que entregaban los comandos `x.x.x.x:yyyy` no mostraba nada.
+
+Al no encontrar suficiente información al respecto de como arreglar el problema y con carencia de tiempo, decidí enfocarme en pulir la aplicación principal.
+
+### 2.6. Tests
+
+Local:
+
+```bash
+(venv) $ python manage.py test
+```
+
+Dockers:
+
+
+```bash
+$ docker-compose run web python manage.py test
+```
