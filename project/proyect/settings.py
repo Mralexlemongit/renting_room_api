@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from pickle import TRUE
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -14,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv('DJANGO_DEBUG', default=False))
+DEBUG = eval(os.getenv('DJANGO_DEBUG', default=False))
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOST').split(',')
 
@@ -67,17 +68,25 @@ WSGI_APPLICATION = 'proyect.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
+POSTGRES_DATABASE = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": str(os.getenv('POSTGRES_DATABASE', default='booking')),
         "USER": str(os.getenv('POSTGRES_USER')),
         "PASSWORD": str(os.getenv('POSTGRES_PASSWORD')),
         "HOST":  str(os.getenv('POSTGRES_HOST')),
-        "PORT": 5432,  # default postgres port
+        "PORT": 5432, 
     }
 }
 
+LOCAL_DATABASE = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+DATABASES = POSTGRES_DATABASE if eval(os.getenv('USING_POSTGRES_DATABASE', default=True)) else LOCAL_DATABASE
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
