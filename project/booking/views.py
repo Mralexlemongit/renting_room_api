@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
@@ -25,6 +27,17 @@ def api_root(request, format=None):
         'documentacion': reverse('schema-redoc', request=request, format=format),
     })
 
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def booking_event(request, pk, format=None):
+    data = {"user": request.user.id, "event": pk}
+    serializer = BookingListSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class RoomListView(generics.ListCreateAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomListSerializer
@@ -39,13 +52,6 @@ class RoomDetailView(generics.RetrieveDestroyAPIView):
     serializer_class = RoomDetailSerializer
     permission_classes = [IsBusinessOrReadOnly]
 
-# class PublicAndOwnedEventsQuerySetMixin:
-#     def get_queryset(self):
-#         events = Event.objects.filter(type='PUB')
-#         user = self.request.user
-#         if user.groups.filter(name = 'business').exists():
-#             events = events | Event.objects.filter(owner=user)
-#         return events
 
 class EventListView(generics.ListCreateAPIView):
     queryset = Event.objects.all()

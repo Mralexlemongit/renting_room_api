@@ -6,6 +6,7 @@ from booking.views import (
     EventListView,
     BookingListView,
     api_root,
+    booking_event
 )
 
 
@@ -18,4 +19,5 @@ urlpatterns = [
     path('eventos/<int:pk>', EventDetailView.as_view(), name='event-detail'),
     path('reservaciones/', BookingListView.as_view(), name='booking-list'),
     path('reservaciones/<int:pk>', BookingListView.as_view(), name='booking-detail'),
+    path('eventos/<int:pk>/reservar', booking_event, name='booking-event'),
 ]

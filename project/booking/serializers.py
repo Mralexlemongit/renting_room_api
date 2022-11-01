@@ -3,6 +3,13 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator, UniqueForDateValidator
 
+event_unic_for_date_validation = UniqueForDateValidator(
+    queryset = Event.objects.all(),
+    field = 'room',
+    date_field = 'date',
+    message = "Cannot create event in room with day reserved."
+)
+
 # User Serializer:
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,18 +30,35 @@ class RoomHyperlinkedSerializer(serializers.ModelSerializer):
         rep['url'] = rep.pop("url")
         return rep
 
-# Regular serializers
+class EventHyperlinkedSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.first_name')
+    
+    class Meta:
+        model = Event
+        fields = ['url', 'title', 'date', 'type', 'owner', 'spaces']
+        validators = [
+            event_unic_for_date_validation
+        ]
 
-event_unic_for_date_validation = UniqueForDateValidator(
-    queryset = Event.objects.all(),
-    field = 'room',
-    date_field = 'date',
-    message = "Cannot create event in room with day reserved."
-)
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["titulo"] = rep["title"]
+        rep.pop("title", None)
+        rep["espacios_disponibles"] = rep["spaces"] or 'Agotado'
+        rep.pop("spaces", None)
+        rep["tipo"] = dict(Event.Type.choices)[rep["type"]]
+        rep.pop("type", None)
+        rep["fecha"] = rep["date"]
+        rep.pop("date", None)
+        rep["organizador"] = rep["owner"]
+        rep.pop("owner", None)
+
+        return rep
+
+# Regular serializers
 
 class EventListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.first_name')
-    room = RoomHyperlinkedSerializer()
 
     class Meta:
         model = Event
@@ -64,10 +88,28 @@ class EventDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ['title', 'room', 'date', 'type', 'owner']
+        fields = ['title', 'room', 'date', 'type', 'owner', 'spaces']
         validators = [
             event_unic_for_date_validation
         ]
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["titulo"] = rep["title"]
+        rep.pop("title", None)
+        rep["espacios_disponibles"] = rep["spaces"] or 'Agotado'
+        rep.pop("spaces", None)
+        rep["tipo"] = dict(Event.Type.choices)[rep["type"]]
+        rep.pop("type", None)
+        rep["fecha"] = rep["date"]
+        rep.pop("date", None)
+        rep["organizador"] = rep["owner"]
+        rep.pop("owner", None)
+        rep["cuarto"] = rep["room"]
+        rep.pop("room", None)
+
+        return rep
+
 
 class BookingListSerializer(serializers.ModelSerializer):
     user =  serializers.PrimaryKeyRelatedField(
@@ -111,7 +153,7 @@ class RoomListSerializer(serializers.ModelSerializer):
         return rep
 
 class RoomDetailSerializer(serializers.ModelSerializer):
-    events = EventListSerializer(
+    events = EventHyperlinkedSerializer(
         many = True,
         read_only = True,
     )
