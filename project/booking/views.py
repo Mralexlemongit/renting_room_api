@@ -1,7 +1,10 @@
 from django.contrib.auth.models import User
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 
 from booking.models import Booking, Room, Event
 from booking.permissions import IsBusinessOrReadOnly
@@ -13,6 +16,15 @@ from booking.serializers import (
     EventListSerializer
 )
 
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'cuartos': reverse('room-list', request=request, format=format),
+        'eventos': reverse('event-list', request=request, format=format),
+        'reservaciones': reverse('booking-list', request=request, format=format),
+        'documentacion': reverse('schema-redoc', request=request, format=format),
+    })
+
 class RoomListView(generics.ListCreateAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomListSerializer
@@ -20,29 +32,31 @@ class RoomListView(generics.ListCreateAPIView):
 
     @swagger_auto_schema(operation_description="description")
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        return self.list(request, *args, **kwargs)
 
 class RoomDetailView(generics.RetrieveDestroyAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomDetailSerializer
     permission_classes = [IsBusinessOrReadOnly]
 
-class PublicAndOwnedEventsQuerySetMixin:
-    def get_queryset(self):
-        events = Event.objects.filter(type='PUB')
-        user = self.request.user
-        if user.groups.filter(name = 'business').exists():
-            events = events | Event.objects.filter(owner=user)
-        return events
+# class PublicAndOwnedEventsQuerySetMixin:
+#     def get_queryset(self):
+#         events = Event.objects.filter(type='PUB')
+#         user = self.request.user
+#         if user.groups.filter(name = 'business').exists():
+#             events = events | Event.objects.filter(owner=user)
+#         return events
 
-class EventListView(PublicAndOwnedEventsQuerySetMixin, generics.ListCreateAPIView):
+class EventListView(generics.ListCreateAPIView):
+    queryset = Event.objects.all()
     serializer_class = EventListSerializer
     permission_classes = [IsBusinessOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-class EventDetailView(PublicAndOwnedEventsQuerySetMixin, generics.RetrieveUpdateAPIView):
+class EventDetailView(generics.RetrieveUpdateAPIView):
+    queryset = Event.objects.all()
     serializer_class = EventDetailSerializer
     permission_classes = [IsBusinessOrReadOnly]
 
@@ -52,7 +66,7 @@ class BookingListView(generics.ListCreateAPIView):
 
     @swagger_auto_schema(operation_description="description")
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        return self.list(request, *args, **kwargs)
 
     def get_queryset(self):
         if self.request.user.is_authenticated:

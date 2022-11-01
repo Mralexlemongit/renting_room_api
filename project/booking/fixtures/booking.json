@@ -26,8 +26,8 @@
             "last_login": null,
             "is_superuser": true,
             "username": "admin",
-            "first_name": "",
-            "last_name": "",
+            "first_name": "Administrador",
+            "last_name": "Hernandez",
             "email": "admin@example.com",
             "is_staff": true,
             "is_active": true,
@@ -43,12 +43,12 @@
         "pk": 2,
         "fields":
         {
-            "password": "pbkdf2_sha256$390000$2NV99Gw2uKwPvaT2iTntRu$sVQ167IJ7FG3mZCkqC2EQCmH1v8YF9Sd1CWb8cRIW5o=",
+            "password": "pbkdf2_sha256$390000$jf1umjuq0xLmGEjtfSaIf5$BTKg5jNSCVmpyrjPzL9hf8aanHdIuS4ffGgsy5pIk60=",
             "last_login": null,
             "is_superuser": true,
             "username": "custom",
-            "first_name": "",
-            "last_name": "",
+            "first_name": "Customer",
+            "last_name": "Lopez",
             "email": "custom@example.com",
             "is_staff": true,
             "is_active": true,
@@ -76,12 +76,28 @@
         }
     },
     {
+        "model": "booking.room",
+        "pk": 3,
+        "fields":
+        {
+            "capacity": 5
+        }
+    },
+    {
+        "model": "booking.room",
+        "pk": 4,
+        "fields":
+        {
+            "capacity": 2
+        }
+    },
+    {
         "model": "booking.event",
         "pk": 1,
         "fields":
         {
             "owner": 1,
-            "title": "Primer Evento del año",
+            "title": "Evento con mucho espacio",
             "room": 1,
             "date": "2022-10-10",
             "type": "PUB"
@@ -96,6 +112,30 @@
             "title": "Evento lleno",
             "room": 2,
             "date": "2022-10-10",
+            "type": "PRI"
+        }
+    },
+    {
+        "model": "booking.event",
+        "pk": 3,
+        "fields":
+        {
+            "owner": 1,
+            "title": "Evento con poco espacio",
+            "room": 3,
+            "date": "2022-10-10",
+            "type": "PUB"
+        }
+    },
+    {
+        "model": "booking.event",
+        "pk": 4,
+        "fields":
+        {
+            "owner": 1,
+            "title": "Evento con un espacio",
+            "room": 3,
+            "date": "2022-10-11",
             "type": "PRI"
         }
     },

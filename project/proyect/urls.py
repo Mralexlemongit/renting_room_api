@@ -21,9 +21,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('',include('booking.urls')),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('', include('booking.urls')),
+    path('docs/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    # path('admin/', admin.site.urls), 
-    # path('docs/', include_docs_urls(title='Booking API'))
 ]
