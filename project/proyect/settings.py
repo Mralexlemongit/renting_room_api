@@ -79,14 +79,16 @@ POSTGRES_DATABASE = {
     }
 }
 
-LOCAL_DATABASE = {
+SQLITE_DATABASE = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
-DATABASES = POSTGRES_DATABASE if eval(os.getenv('USING_POSTGRES_DATABASE', default=True)) else LOCAL_DATABASE
+USING_POSTGRES_DATABASE = eval(os.getenv('USING_POSTGRES_DATABASE', default=True))
+DATABASES = POSTGRES_DATABASE if USING_POSTGRES_DATABASE else SQLITE_DATABASE
+print('---> BASE DE DATOS: ', DATABASES['default']['ENGINE'])
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
